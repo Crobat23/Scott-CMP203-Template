@@ -16,6 +16,12 @@ public:
 	virtual void OnEvent(Event& e) override;
 	virtual void OnImGuiRender() override;
 
+	void drawTriangle(float2 offset, float3 colour);
+	void drawSquare(float2 offset, float3 colour);
+	void drawSquareWithStrip(float2 offset, float3 colour);
+	void drawHexagonFan(float2 offset, float3 colour);
+	void drawFan(int sides, float size, float2 offset, float3 colour);
+
 private:
 	bool bWireframe = false;
 	CMP203::Renderer203 Renderer;
