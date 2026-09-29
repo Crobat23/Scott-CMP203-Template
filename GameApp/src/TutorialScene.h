@@ -20,7 +20,6 @@ public:
 	void drawSquare(float2 offset, float3 colour);
 	void drawSquareWithStrip(float2 offset, float3 colour);
 	void drawHexagonFan(float2 offset, float3 colour);
-	void drawFan(int sides, float size, float2 offset, float3 colour);
 
 private:
 	bool bWireframe = false;
