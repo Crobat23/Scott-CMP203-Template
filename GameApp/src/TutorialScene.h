@@ -2,7 +2,7 @@
 #include "Skateboard/Scene/Scene.h"
 #include "Skateboard/ComponentSystems/Systems/BaseSystem.h"
 
-#include "CMP203/Renderer203.h"
+#include "shapeLibrary.h"
 
 class TutorialScene : public Skateboard::Scene {
 public:
@@ -15,23 +15,25 @@ public:
 	virtual void OnRender() override;
 	virtual void OnEvent(Event& e) override;
 	virtual void OnImGuiRender() override;
-
-	void drawTriangle(float3 colour, float scale, float3 translation, float rotationAngle);
-	CMP203::InstanceData drawSquare(float3 colour, float3 scaleVal, float3 translationVal, float rotationAngle);
-	CMP203::InstanceData drawSquare(float3 colour, float3 scaleVal, float3 translationVal, float rotationAngle, CMP203::InstanceData parentData);
-	void drawSquareWithStrip(float2 offset, float3 colour);
-	void drawHexagonFan(float2 offset, float3 colour);
-
 private:
+	shapeLibrary shapeLibrary;
+
 	bool bWireframe = false;
 	CMP203::Renderer203 Renderer;
 
+	bool renderTriangle = false;
 	float triangleScale= 1.f;
 	float triangleRotate = 0.f;
 	float triangleTransform[3] = { 0.f, 0.f, 0.f };
 
+	bool renderArm = false;
 	float upperArmRotate = 0.f;
 	float lowerArmRotate = 0.f;
 	float handRotate = 0.f;
 	float armTransform[3] = { 0.f,0.f,0.f };
+
+	bool renderCube = true;
+	float cubeScale = 1.f;
+	float cubeRotate[3] = { 0.f,0.f,0.f };
+	float cubeTransform[3] = { 0.f, 0.f, 0.f };
 };
