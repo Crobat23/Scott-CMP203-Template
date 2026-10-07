@@ -136,3 +136,50 @@ void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> c
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &cubeData);
 }
+
+void shapeLibrary::drawDisc(CMP203::Renderer203& renderer, int sides, float3 colour, float scaleVal, float3 translationVal, float rotationAngle)
+{
+	//Assumes radius of 1. Size can be changed through transforms.
+	if (sides < 3) return;
+
+	float interval = (2 * SKTBD_PI) / sides;
+	float angle = 0;
+	
+	CMP203::Vertex v0, v1;
+	v0.Position = float3(0.f, 0.f, 0.f);
+	v1.Position = float3(cos(angle), sin(angle), 0.f);
+	v0.Colour = v1.Colour = colour;
+
+	CMP203::InstanceData discData;
+	glm::mat4 transform, rotation, scale;
+
+	scale = glm::scale(float3{ scaleVal, scaleVal, scaleVal });
+	transform = glm::translate(translationVal);
+
+	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle), float3(0, 0, -1));
+	rotation = glm::toMat4(rotationQuat);
+
+	discData.World = transform * rotation * scale;
+
+
+	std::vector<CMP203::Vertex> vertices = { v0 };
+	std::vector<uint32_t> indices = {0,1};
+
+	for (int i = 0; i <= sides; i++)
+	{
+		angle += interval;
+		if (angle > 360) angle = 360;
+
+		CMP203::Vertex newVertex;
+		newVertex.Position = float3(cos(angle), sin(angle), 0.f);
+		newVertex.Colour = colour;
+
+		vertices.push_back(newVertex);
+		indices.push_back(i+2);
+		indices.push_back(i+2);
+	}
+	indices.push_back(1);
+
+	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
+	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &discData);
+}

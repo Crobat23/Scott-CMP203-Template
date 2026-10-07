@@ -47,6 +47,11 @@ void TutorialScene::OnRender()
 		shapeLibrary.drawCube(Renderer, cubeColours, cubeScale, float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]), float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]));
 	}
 
+	if (renderDisc) 
+	{
+		shapeLibrary.drawDisc(Renderer, 15, float3(1.f, 1.f, 0.f), discScale, float3(discTransform[0], discTransform[1], discTransform[2]), discRotate);
+	}
+
 	Renderer.End();
 }
 
@@ -76,7 +81,7 @@ void TutorialScene::OnImGuiRender()
 
 	ImGui::Checkbox("Render Triangle", &renderTriangle);
 	if (renderTriangle) {
-		ImGui::SliderFloat("Triangle scale:", &triangleScale, 0.0f, 10.0f);
+		ImGui::SliderFloat("Triangle scale:", &triangleScale, 0.1f, 10.0f);
 		ImGui::SliderFloat("Triangle rotation:", &triangleRotate, 0.0f, 360.0f);
 		ImGui::SliderFloat3("Triangle position:", triangleTransform, -15.0f, 15.0f);
 	}
@@ -91,9 +96,17 @@ void TutorialScene::OnImGuiRender()
 
 	ImGui::Checkbox("Render Cube", &renderCube);
 	if (renderCube) {
-		ImGui::SliderFloat("Cube scale:", &cubeScale, 0.0f, 10.0f);
+		ImGui::SliderFloat("Cube scale:", &cubeScale, 0.1f, 10.0f);
 		ImGui::SliderFloat3("Cube rotation:", cubeRotate, 0.0f, 360.0f);
 		ImGui::SliderFloat3("Cube position:", cubeTransform, -15.0f, 15.0f);
 	}
-		ImGui::End();
+
+	ImGui::Checkbox("Render Disc", &renderDisc);
+	if (renderDisc) {
+		ImGui::SliderFloat("Disc scale:", &discScale, 0.1f, 10.0f);
+		ImGui::SliderFloat("Disc rotation:", &discRotate, 0.0f, 360.0f);
+		ImGui::SliderFloat3("Disc position:", discTransform, -15.0f, 15.0f);
+	}
+
+	ImGui::End();
 }

@@ -32,8 +32,13 @@ private:
 	float handRotate = 0.f;
 	float armTransform[3] = { 0.f,0.f,0.f };
 
-	bool renderCube = true;
+	bool renderCube = false;
 	float cubeScale = 1.f;
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
+
+	bool renderDisc = true;
+	float discScale = 1.f;
+	float discRotate = 0.f;
+	float discTransform[3] = { 0.f, 0.f, 0.f };
 };
