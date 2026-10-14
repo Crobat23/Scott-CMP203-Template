@@ -96,6 +96,45 @@ CMP203::InstanceData shapeLibrary::drawSquare(CMP203::Renderer203& renderer, flo
 	return squareData;
 }
 
+std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer, int sides, float3 colour, CMP203::InstanceData parentData)
+{
+	//Assumes radius of 1. Size can be changed through transforms.
+
+	float interval = (2 * SKTBD_PI) / sides;
+	float angle = 0;
+
+	CMP203::Vertex v0, v1;
+	v0.Position = float3(0.f, 0.f, 0.f);
+	v1.Position = float3(cos(angle), sin(angle), 0.f);
+	v0.Colour = v1.Colour = colour;
+
+
+	std::vector<CMP203::Vertex> vertices = { v0 };
+	std::vector<uint32_t> indices = { 0,1 };
+
+	if (sides < 3) return vertices;
+
+	for (int i = 0; i <= sides; i++)
+	{
+		angle += interval;
+		if (angle > 360) angle = 360;
+
+		CMP203::Vertex newVertex;
+		newVertex.Position = float3(cos(angle), sin(angle), 0.f);
+		newVertex.Colour = colour;
+
+		vertices.push_back(newVertex);
+		indices.push_back(i + 2);
+		indices.push_back(i + 2);
+	}
+	indices.push_back(1);
+
+	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
+	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &parentData);
+
+	return vertices;
+}
+
 void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> cubeColour, float scaleVal, float3 translationVal, float3 rotationAngle)
 {
 	CMP203::Vertex v0, v1, v2, v3, v4, v5, v6, v7;
@@ -137,49 +176,40 @@ void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> c
 	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &cubeData);
 }
 
-void shapeLibrary::drawDisc(CMP203::Renderer203& renderer, int sides, float3 colour, float scaleVal, float3 translationVal, float rotationAngle)
+void shapeLibrary::drawCone(CMP203::Renderer203& renderer, float discSides, float3 coneColour, float scaleVal, float3 translationVal, float3 rotationAngle)
 {
-	//Assumes radius of 1. Size can be changed through transforms.
-	if (sides < 3) return;
+	CMP203::Vertex v0;
 
-	float interval = (2 * SKTBD_PI) / sides;
-	float angle = 0;
-	
-	CMP203::Vertex v0, v1;
-	v0.Position = float3(0.f, 0.f, 0.f);
-	v1.Position = float3(cos(angle), sin(angle), 0.f);
-	v0.Colour = v1.Colour = colour;
-
-	CMP203::InstanceData discData;
-	glm::mat4 transform, rotation, scale;
+	CMP203::InstanceData coneData;
+	glm::mat4 transform, rotationX, rotationY, rotationZ, scale;
 
 	scale = glm::scale(float3{ scaleVal, scaleVal, scaleVal });
 	transform = glm::translate(translationVal);
 
-	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle), float3(0, 0, -1));
-	rotation = glm::toMat4(rotationQuat);
+	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[0]), float3(-1, 0, 0));
+	rotationX = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[1]), float3(0, -1, 0));
+	rotationY = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[2]), float3(0, 0, -1));
+	rotationZ = glm::toMat4(rotationQuat);
 
-	discData.World = transform * rotation * scale;
+	coneData.World = transform * rotationX * rotationY * rotationZ * scale;
 
+	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, 20, coneColour, coneData);
 
-	std::vector<CMP203::Vertex> vertices = { v0 };
-	std::vector<uint32_t> indices = {0,1};
+	v0.Position = vertices.at(0).Position;
+	v0.Position += float3(0.f, 0.f, 2.f);
 
-	for (int i = 0; i <= sides; i++)
+	vertices.push_back(v0);
+	unsigned int topPoint = (vertices.size() - 1);
+	std::vector<uint32_t> indices = { topPoint };
+
+	for (int i = 1; i < topPoint; i++)
 	{
-		angle += interval;
-		if (angle > 360) angle = 360;
-
-		CMP203::Vertex newVertex;
-		newVertex.Position = float3(cos(angle), sin(angle), 0.f);
-		newVertex.Colour = colour;
-
-		vertices.push_back(newVertex);
-		indices.push_back(i+2);
-		indices.push_back(i+2);
+		indices.push_back(i);
+		indices.push_back(i);
 	}
-	indices.push_back(1);
 
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
-	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &discData);
+	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &coneData);
 }

@@ -47,9 +47,9 @@ void TutorialScene::OnRender()
 		shapeLibrary.drawCube(Renderer, cubeColours, cubeScale, float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]), float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]));
 	}
 
-	if (renderDisc) 
+	if (renderCone) 
 	{
-		shapeLibrary.drawDisc(Renderer, 15, float3(1.f, 1.f, 0.f), discScale, float3(discTransform[0], discTransform[1], discTransform[2]), discRotate);
+		shapeLibrary.drawCone(Renderer, discSides, float3(0.6f, 0.6f, 0.2f), coneScale, float3(coneTransform[0], coneTransform[1], coneTransform[2]), float3(coneRotate[0], coneRotate[1], coneRotate[2]));
 	}
 
 	Renderer.End();
@@ -101,11 +101,12 @@ void TutorialScene::OnImGuiRender()
 		ImGui::SliderFloat3("Cube position:", cubeTransform, -15.0f, 15.0f);
 	}
 
-	ImGui::Checkbox("Render Disc", &renderDisc);
-	if (renderDisc) {
-		ImGui::SliderFloat("Disc scale:", &discScale, 0.1f, 10.0f);
-		ImGui::SliderFloat("Disc rotation:", &discRotate, 0.0f, 360.0f);
-		ImGui::SliderFloat3("Disc position:", discTransform, -15.0f, 15.0f);
+	ImGui::Checkbox("Render Cone", &renderCone);
+	if (renderCone) {
+		ImGui::SliderInt("Disc sides:", &discSides, 4, 30);
+		ImGui::SliderFloat("Cone scale:", &coneScale, 0.1f, 10.0f);
+		ImGui::SliderFloat3("Cone rotation:", coneRotate, 0.0f, 360.0f);
+		ImGui::SliderFloat3("Cone position:", coneTransform, -15.0f, 15.0f);
 	}
 
 	ImGui::End();
