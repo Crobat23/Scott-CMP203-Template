@@ -207,7 +207,6 @@ void shapeLibrary::drawCone(CMP203::Renderer203& renderer, float discSides, floa
 	for (int i = 1; i < topPoint; i++)
 	{
 		indices.push_back(i);
-		indices.push_back(i);
 	}
 
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
