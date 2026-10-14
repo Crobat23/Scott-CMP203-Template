@@ -195,7 +195,7 @@ void shapeLibrary::drawCone(CMP203::Renderer203& renderer, float discSides, floa
 
 	coneData.World = transform * rotationX * rotationY * rotationZ * scale;
 
-	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, 20, coneColour, coneData);
+	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, discSides, coneColour, coneData);
 
 	v0.Position = vertices.at(0).Position;
 	v0.Position += float3(0.f, 0.f, 2.f);
