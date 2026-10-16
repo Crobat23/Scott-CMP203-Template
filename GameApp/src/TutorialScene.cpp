@@ -49,7 +49,12 @@ void TutorialScene::OnRender()
 
 	if (renderCone) 
 	{
-		shapeLibrary.drawCone(Renderer, discSides, float3(0.6f, 0.6f, 0.2f), coneScale, float3(coneTransform[0], coneTransform[1], coneTransform[2]), float3(coneRotate[0], coneRotate[1], coneRotate[2]));
+		shapeLibrary.drawCone(Renderer, coneDiscSides, float3(0.6f, 0.6f, 0.2f), coneScale, float3(coneTransform[0], coneTransform[1], coneTransform[2]), float3(coneRotate[0], coneRotate[1], coneRotate[2]));
+	}
+
+	if (renderCylinder)
+	{
+		shapeLibrary.drawCylinder(Renderer, cylinderDiscSides, float3(0.2f, 0.2f, 0.8f), cylinderLength, cylinderScale, float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]), float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]));
 	}
 
 	Renderer.End();
@@ -103,10 +108,19 @@ void TutorialScene::OnImGuiRender()
 
 	ImGui::Checkbox("Render Cone", &renderCone);
 	if (renderCone) {
-		ImGui::SliderInt("Disc sides:", &discSides, 4, 30);
+		ImGui::SliderInt("Disc sides:", &coneDiscSides, 4, 30);
 		ImGui::SliderFloat("Cone scale:", &coneScale, 0.1f, 10.0f);
 		ImGui::SliderFloat3("Cone rotation:", coneRotate, 0.0f, 360.0f);
 		ImGui::SliderFloat3("Cone position:", coneTransform, -15.0f, 15.0f);
+	}
+
+	ImGui::Checkbox("Render Cylinder", &renderCylinder);
+	if (renderCylinder) {
+		ImGui::SliderInt("Disc sides:", &cylinderDiscSides, 4, 30);
+		ImGui::SliderFloat("Cylinder Length:", &cylinderLength, 1.f, 100.f);
+		ImGui::SliderFloat("Cylinder scale:", &cylinderScale, 0.1f, 10.0f);
+		ImGui::SliderFloat3("Cylinder rotation:", cylinderRotate, 0.0f, 360.0f);
+		ImGui::SliderFloat3("Cylinder position:", cylinderTransform, -15.0f, 15.0f);
 	}
 
 	ImGui::End();

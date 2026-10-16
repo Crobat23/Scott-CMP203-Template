@@ -96,7 +96,7 @@ CMP203::InstanceData shapeLibrary::drawSquare(CMP203::Renderer203& renderer, flo
 	return squareData;
 }
 
-std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer, int sides, float3 colour, CMP203::InstanceData parentData)
+std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer, int sides, float3 colour, float offset, CMP203::InstanceData parentData, bool flipWindingOrder)
 {
 	//Assumes radius of 1. Size can be changed through transforms.
 
@@ -104,8 +104,8 @@ std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer
 	float angle = 0;
 
 	CMP203::Vertex v0, v1;
-	v0.Position = float3(0.f, 0.f, 0.f);
-	v1.Position = float3(cos(angle), sin(angle), 0.f);
+	v0.Position = float3(0.f, 0.f, offset);
+	v1.Position = float3(cos(angle), sin(angle), offset);
 	v0.Colour = v1.Colour = colour;
 
 
@@ -116,11 +116,12 @@ std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer
 
 	for (int i = 0; i <= sides; i++)
 	{
-		angle += interval;
-		if (angle > 360) angle = 360;
+		if (flipWindingOrder) angle -= interval;
+		else angle += interval;
+		if (abs(angle) > 360) angle = 360;
 
 		CMP203::Vertex newVertex;
-		newVertex.Position = float3(cos(angle), sin(angle), 0.f);
+		newVertex.Position = float3(cos(angle), sin(angle), offset);
 		newVertex.Colour = colour;
 
 		vertices.push_back(newVertex);
@@ -195,20 +196,71 @@ void shapeLibrary::drawCone(CMP203::Renderer203& renderer, float discSides, floa
 
 	coneData.World = transform * rotationX * rotationY * rotationZ * scale;
 
-	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, discSides, coneColour, coneData);
+	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, discSides, coneColour, 0.f, coneData, false);
 
 	v0.Position = vertices.at(0).Position;
 	v0.Position += float3(0.f, 0.f, 2.f);
+	v0.Colour = coneColour;
 
 	vertices.push_back(v0);
 	unsigned int topPoint = (vertices.size() - 1);
 	std::vector<uint32_t> indices = { topPoint };
 
-	for (int i = 1; i < topPoint; i++)
+	for (int i = topPoint-1; i >= 1; i--)
 	{
 		indices.push_back(i);
 	}
 
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
 	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &coneData);
+}
+
+void shapeLibrary::drawCylinder(CMP203::Renderer203& renderer, float discSides, float3 cylinderColour, float length, float scaleVal, float3 translationVal, float3 rotationAngle)
+{
+	CMP203::InstanceData cylinderData;
+
+	glm::mat4 transform, offset, rotationX, rotationY, rotationZ, scale;
+
+	scale = glm::scale(float3{ scaleVal, scaleVal, scaleVal });
+	transform = glm::translate(translationVal);
+
+	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[0]), float3(-1, 0, 0));
+	rotationX = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[1]), float3(0, -1, 0));
+	rotationY = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[2]), float3(0, 0, -1));
+	rotationZ = glm::toMat4(rotationQuat);
+
+	cylinderData.World = transform * rotationX * rotationY * rotationZ * scale;
+
+	std::vector<CMP203::Vertex> vertices = drawDisc(renderer, discSides, cylinderColour, 0.f, cylinderData, false);
+	std::vector<CMP203::Vertex> topVertices = drawDisc(renderer, discSides, cylinderColour, length, cylinderData, true);
+
+	for (auto i : topVertices) //Add the vertices from the second disc to the vector for the first.
+	{
+		vertices.push_back(i);
+	}
+
+	std::vector<uint32_t> indices = {};
+
+	for (int i = 1; i <= discSides; i++)
+	{
+		int bottomLeft = i;
+		int bottomRight = i - 1;
+
+		if (bottomRight == 0) bottomRight = discSides;
+
+		int topLeft = bottomLeft + discSides + 1;
+		int topRight = bottomRight + discSides + 1;
+
+		indices.push_back(bottomRight);
+		indices.push_back(topRight);
+		indices.push_back(bottomLeft);
+		indices.push_back(bottomLeft);
+		indices.push_back(topRight);
+		indices.push_back(topLeft);
+	}
+
+	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &cylinderData);
 }

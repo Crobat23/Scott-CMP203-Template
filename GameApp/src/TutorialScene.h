@@ -37,9 +37,16 @@ private:
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
 
-	bool renderCone = true;
-	int discSides = 8;
+	bool renderCone = false;
+	int coneDiscSides = 8;
 	float coneScale = 1.f;
 	float coneRotate[3] = { 0.f, 0.f, 0.f };
 	float coneTransform[3] = { 0.f, 0.f, 0.f };
+
+	bool renderCylinder = true;
+	float cylinderLength = 3.f;
+	int cylinderDiscSides = 5;
+	float cylinderScale = 1.f;
+	float cylinderRotate[3] = { 0.f, 0.f, 0.f };
+	float cylinderTransform[3] = { 0.f, 0.f, 0.f };
 };
