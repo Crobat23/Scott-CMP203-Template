@@ -116,9 +116,8 @@ std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer
 
 	for (int i = 0; i <= sides; i++)
 	{
-		if (flipWindingOrder) angle -= interval;
-		else angle += interval;
-		if (abs(angle) > 360) angle = 360;
+		angle += interval;
+		if (angle > 360) angle = 360;
 
 		CMP203::Vertex newVertex;
 		newVertex.Position = float3(cos(angle), sin(angle), offset);
@@ -129,6 +128,14 @@ std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer
 		indices.push_back(i + 2);
 	}
 	indices.push_back(1);
+
+	if (flipWindingOrder)
+	{
+		for (int i = 1; i < indices.size(); i += 2)
+		{
+			std::swap(indices.at(i), indices.at(i + 1));
+		}
+	}
 
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
 	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &parentData);
@@ -250,8 +257,8 @@ void shapeLibrary::drawCylinder(CMP203::Renderer203& renderer, float discSides, 
 
 		if (bottomRight == 0) bottomRight = discSides;
 
-		int topLeft = bottomLeft + discSides + 1;
-		int topRight = bottomRight + discSides + 1;
+		int topLeft = bottomLeft + discSides + 2;
+		int topRight = bottomRight + discSides + 2;
 
 		indices.push_back(bottomRight);
 		indices.push_back(topRight);
