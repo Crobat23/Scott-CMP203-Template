@@ -3,6 +3,7 @@
 #include "Skateboard/ComponentSystems/Systems/BaseSystem.h"
 
 #include "shapeLibrary.h"
+#include "newCamera.h"
 
 class TutorialScene : public Skateboard::Scene {
 public:
@@ -15,11 +16,17 @@ public:
 	virtual void OnRender() override;
 	virtual void OnEvent(Event& e) override;
 	virtual void OnImGuiRender() override;
+
 private:
 	shapeLibrary shapeLibrary;
+	newCamera camera1;
 
 	bool bWireframe = false;
 	CMP203::Renderer203 Renderer;
+
+	float cameraTransform[3] = { 0.f,0.f,0.f };
+	float cameraAngle[2] = { 0.f,0.f };
+
 
 	bool renderTriangle = false;
 	float triangleScale= 1.f;
@@ -32,8 +39,8 @@ private:
 	float handRotate = 0.f;
 	float armTransform[3] = { 0.f,0.f,0.f };
 
-	bool renderCube = false;
-	float cubeScale = 1.f;
+	bool renderCube = true;
+	//float cubeScale = 1.f;
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
 
@@ -43,7 +50,7 @@ private:
 	float coneRotate[3] = { 0.f, 0.f, 0.f };
 	float coneTransform[3] = { 0.f, 0.f, 0.f };
 
-	bool renderCylinder = true;
+	bool renderCylinder = false;
 	float cylinderLength = 3.f;
 	int cylinderDiscSides = 5;
 	float cylinderScale = 1.f;

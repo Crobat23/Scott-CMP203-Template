@@ -13,6 +13,7 @@
     <ClInclude Include="src\TutorialScene.h" />
     <ClInclude Include="src\CMP203\Renderer203.h" />
     <ClInclude Include="src\shapeLibrary.h" />
+    <ClInclude Include="src\newCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameApp.cpp" />
@@ -20,6 +21,7 @@
     <ClCompile Include="src\TutorialScene.cpp" />
     <ClCompile Include="src\CMP203\Renderer203.cpp" />
     <ClCompile Include="src\shapeLibrary.cpp" />
+    <ClCompile Include="src\newCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\CMP203\Shaders\CMP203_NormalGS_GS.hlsl">

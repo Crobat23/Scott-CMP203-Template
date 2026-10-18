@@ -23,6 +23,21 @@ void TutorialScene::OnHandleInput(Skateboard::TimeManager* time)
 void TutorialScene::OnUpdate(Skateboard::TimeManager* time)
 {
 	Scene::OnUpdate(time);
+
+	camera1.setPos(float3(cameraTransform[0], cameraTransform[1], cameraTransform[2]));
+	camera1.setAngle(float3(cameraAngle[0], cameraAngle[1], 0.f));
+
+	CMP203::CameraData cam_data;
+	float3 camera_pos = camera1.getPos();
+	float3 camera_forward = camera1.getForwardVector();
+	float3 camera_up = camera1.getUpVector();
+
+	cam_data.ProjectionMatrix = glm::perspectiveLH(glm::radians(60.f),
+	GraphicsContext::Context->GetClientAspectRatio(), 100.f, 0.01f);
+
+	cam_data.ViewMatrix = glm::lookAtLH(camera_pos, camera_pos + camera_forward, camera_up);
+
+	Renderer.SetCameraData(cam_data);
 }
 
 void TutorialScene::OnRender()
@@ -43,8 +58,8 @@ void TutorialScene::OnRender()
 
 	if (renderCube)
 	{
-		std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(0.f,1.f,1.f), float3(1.f,1.f,0.f) };
-		shapeLibrary.drawCube(Renderer, cubeColours, cubeScale, float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]), float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]));
+		std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
+		shapeLibrary.drawCube(Renderer, cubeColours, 10, float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]), float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]), true);
 	}
 
 	if (renderCone) 
@@ -84,6 +99,10 @@ void TutorialScene::OnImGuiRender()
 
 	}
 
+	ImGui::Text("Camera Controls");
+	ImGui::SliderFloat3("Camera Movement", cameraTransform, -5.f, 5.f);
+	ImGui::SliderFloat2("Camera Angle", cameraAngle, -90.f, 90.f);
+
 	ImGui::Checkbox("Render Triangle", &renderTriangle);
 	if (renderTriangle) {
 		ImGui::SliderFloat("Triangle scale:", &triangleScale, 0.1f, 10.0f);
@@ -101,7 +120,7 @@ void TutorialScene::OnImGuiRender()
 
 	ImGui::Checkbox("Render Cube", &renderCube);
 	if (renderCube) {
-		ImGui::SliderFloat("Cube scale:", &cubeScale, 0.1f, 10.0f);
+		//ImGui::SliderFloat("Cube scale:", &cubeScale, 0.1f, 10.0f);
 		ImGui::SliderFloat3("Cube rotation:", cubeRotate, 0.0f, 360.0f);
 		ImGui::SliderFloat3("Cube position:", cubeTransform, -15.0f, 15.0f);
 	}

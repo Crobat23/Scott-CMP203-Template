@@ -143,7 +143,7 @@ std::vector<CMP203::Vertex> shapeLibrary::drawDisc(CMP203::Renderer203& renderer
 	return vertices;
 }
 
-void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> cubeColour, float scaleVal, float3 translationVal, float3 rotationAngle)
+void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> cubeColour, float scaleVal, float3 translationVal, float3 rotationAngle, bool flipWindingOrder)
 {
 	CMP203::Vertex v0, v1, v2, v3, v4, v5, v6, v7;
 
@@ -177,6 +177,14 @@ void shapeLibrary::drawCube(CMP203::Renderer203& renderer, std::vector<float3> c
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 4; j++) {
 			vertices.at(i * 4 + j).Colour = cubeColour.at(i);
+		}
+	}
+
+	if (flipWindingOrder)
+	{
+		for (int i = 1; i < indices.size(); i += 3)
+		{
+			std::swap(indices.at(i), indices.at(i + 1));
 		}
 	}
 

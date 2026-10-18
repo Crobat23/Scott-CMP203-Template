@@ -185,12 +185,14 @@ IF EXIST "$(OutDir)assets\" $(SKTBD_ENGINE_DIR)\Platform\Windows\batch\ConvertTe
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\newCamera.h" />
     <ClInclude Include="src\shapeLibrary.h" />
     <ClInclude Include="src\CMP203\Renderer203.h" />
     <ClInclude Include="src\TutorialScene.h" />
     <ClInclude Include="src\DefaultGameLayer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\newCamera.cpp" />
     <ClCompile Include="src\shapeLibrary.cpp" />
     <ClCompile Include="src\CMP203\Renderer203.cpp" />
     <ClCompile Include="src\GameApp.cpp" />
