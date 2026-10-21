@@ -1,6 +1,5 @@
 #pragma once
 #include "CMP203/Renderer203.h"
-
 class shapeLibrary
 {
 public:

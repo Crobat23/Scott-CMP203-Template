@@ -13,6 +13,9 @@ TutorialScene::TutorialScene(const std::string& name):
 	Renderer.Init();
 	// Disable lighting, until we have a light in the scene
 	Renderer.UnsetPipelineFlags(CMP203::LIT);
+
+	std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
+	cube1.setColours(cubeColours);
 }
 
 void TutorialScene::OnHandleInput(Skateboard::TimeManager* time)
@@ -71,7 +74,7 @@ void TutorialScene::OnRender()
 	{
 		shapeLibrary.drawCylinder(Renderer, cylinderDiscSides, float3(0.2f, 0.2f, 0.8f), cylinderLength, cylinderScale, float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]), float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]));
 	}
-
+	cube1.Render(Renderer);
 	Renderer.End();
 }
 

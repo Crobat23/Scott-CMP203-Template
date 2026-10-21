@@ -5,6 +5,8 @@
 #include "shapeLibrary.h"
 #include "newCamera.h"
 
+#include "Shapes/Cube.h"
+
 class TutorialScene : public Skateboard::Scene {
 public:
 	explicit TutorialScene(const std::string& name);
@@ -19,6 +21,7 @@ public:
 
 private:
 	shapeLibrary shapeLibrary;
+	Cube cube1;
 	newCamera camera1;
 
 	bool bWireframe = false;
