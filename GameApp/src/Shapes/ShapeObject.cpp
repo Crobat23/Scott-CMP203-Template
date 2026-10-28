@@ -15,15 +15,19 @@ void ShapeObject::setVertices(std::vector<CMP203::Vertex> newVertices)
 	vertices = newVertices;
 }
 
-
 void ShapeObject::addVertex(CMP203::Vertex newVertex)
 {
 	vertices.push_back(newVertex);
 }
 
-CMP203::Vertex ShapeObject::getVertex(int index)
+CMP203::Vertex &ShapeObject::getVertex(int index)
 {
 	return vertices.at(index);
+}
+
+std::vector<CMP203::Vertex> ShapeObject::getVertices()
+{
+	return vertices;
 }
 
 void ShapeObject::setIndices(std::vector<uint32_t> newIndices)
@@ -36,9 +40,43 @@ void ShapeObject::addIndice(uint32_t newIndice)
 	indices.push_back(newIndice);
 }
 
-void ShapeObject::setTransform(CMP203::InstanceData newTransform)
+void ShapeObject::setTransform(float3 translate, float3 rotation, float3 scale)
 {
-	transformData = newTransform;
+	glm::mat4 _transform, _rotationX, _rotationY, _rotationZ, _scale;
+
+	_scale = glm::scale(scale);
+	_transform = glm::translate(translate);
+
+	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[0]), float3(-1, 0, 0));
+	_rotationX = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[1]), float3(0, -1, 0));
+	_rotationY = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[2]), float3(0, 0, -1));
+	_rotationZ = glm::toMat4(rotationQuat);
+
+	transformData.World = _transform * _rotationX * _rotationY * _rotationZ * _scale;
+}
+
+void ShapeObject::setTransform(float3 translate, float3 rotation, float3 scale, CMP203::InstanceData parentData)
+{
+	glm::mat4 _transform, _rotationX, _rotationY, _rotationZ, _scale;
+
+	_scale = glm::scale(scale);
+	_transform = glm::translate(translate);
+
+	glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[0]), float3(-1, 0, 0));
+	_rotationX = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[1]), float3(0, -1, 0));
+	_rotationY = glm::toMat4(rotationQuat);
+	rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotation[2]), float3(0, 0, -1));
+	_rotationZ = glm::toMat4(rotationQuat);
+
+	transformData.World = parentData.World * _transform * _rotationX * _rotationY * _rotationZ * _scale;
+}
+
+void ShapeObject::setTransform(CMP203::InstanceData parentData)
+{
+	transformData.World = parentData.World;
 }
 
 CMP203::InstanceData ShapeObject::getTransform()

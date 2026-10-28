@@ -22,7 +22,5 @@ private:
 	float3 camForward;
 	float3 camUp;
 	float3 camRight;
-
-
 };
 

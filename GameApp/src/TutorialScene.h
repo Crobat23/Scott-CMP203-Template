@@ -6,6 +6,7 @@
 #include "newCamera.h"
 
 #include "Shapes/Cube.h"
+#include "Shapes/Cone.h"
 
 class TutorialScene : public Skateboard::Scene {
 public:
@@ -22,6 +23,7 @@ public:
 private:
 	shapeLibrary shapeLibrary;
 	Cube cube1;
+	Cone cone1;
 	newCamera camera1;
 
 	bool bWireframe = false;
@@ -43,7 +45,7 @@ private:
 	float armTransform[3] = { 0.f,0.f,0.f };
 
 	bool renderCube = true;
-	//float cubeScale = 1.f;
+	float cubeScale = 1.f;
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
 
