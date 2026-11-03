@@ -4,22 +4,7 @@ Cone::Cone()
 {
 	CMP203::Vertex v0;
 
-	///*CMP203::InstanceData coneData;
-	//glm::mat4 transform, rotationX, rotationY, rotationZ, scale;
-
-	//scale = glm::scale(float3{ scaleVal, scaleVal, scaleVal });
-	//transform = glm::translate(translationVal);
-
-	//glm::quat rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[0]), float3(-1, 0, 0));
-	//rotationX = glm::toMat4(rotationQuat);
-	//rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[1]), float3(0, -1, 0));
-	//rotationY = glm::toMat4(rotationQuat);
-	//rotationQuat = glm::rotate(glm::quat(1, 0, 0, 0), glm::radians(rotationAngle[2]), float3(0, 0, -1));
-	//rotationZ = glm::toMat4(rotationQuat);
-
-	//coneData.World = transform * rotationX * rotationY * rotationZ * scale;*/
-
-	base.buildDisc(0.f);
+	base.buildDisc(0.f, discSides);
 	setVertices(base.getVertices());
 
 	v0.Position = getVertex(0).Position;
@@ -34,7 +19,7 @@ Cone::Cone()
 		addIndice(i);
 	}
 
-	setDrawType(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
+	setTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
 }
 
 Cone::~Cone()
@@ -51,13 +36,46 @@ void Cone::setTransformAll(float3 translate, float3 rotation, float3 scale)
 
 void Cone::setColour(float3 colour)
 {
+	for (int i = 0; i < getVertices().size(); i++)
+	{
+		getVertex(i).Colour = colour;
+	}
 	base.setColour(colour);
-	getVertex(getVertices().size() - 1).Colour = colour;
+}
+
+void Cone::setConeHeight(float newHeight)
+{
+	coneHeight = newHeight;
+	int topPoint = getVertices().size() - 1;
+	
+	getVertex(topPoint).Position = getVertex(0).Position;
+	getVertex(topPoint).Position += float3(0.f, 0.f, coneHeight);
 }
 
 void Cone::setDiscSides(int newSides)
 {
-	base.setSides(newSides);
+	float3 colour = getVertex(0).Colour; //Store the current colour of the cone in order to restore it after vertices change.
+
+	discSides = newSides;
+	base.buildDisc(0.f, newSides);
+
+	setVertices(base.getVertices());
+
+	CMP203::Vertex v0;
+
+	v0.Position = getVertex(0).Position;
+	v0.Position += float3(0.f, 0.f, coneHeight);
+
+	addVertex(v0);
+	unsigned int topPoint = (getVertices().size() - 1);
+	setIndices({ topPoint });
+
+	for (int i = topPoint - 1; i >= 1; i--)
+	{
+		addIndice(i);
+	}
+
+	setColour(colour);
 }
 
 void Cone::renderAll(CMP203::Renderer203& Renderer)

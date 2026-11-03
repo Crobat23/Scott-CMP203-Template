@@ -20,7 +20,7 @@ public:
 	void setTransform(CMP203::InstanceData parentData);
 	CMP203::InstanceData getTransform();
 
-	void setDrawType(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType);
+	void setTopology(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType);
 
 	void flipWindingOrder();
 

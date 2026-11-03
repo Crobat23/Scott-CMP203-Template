@@ -7,6 +7,7 @@
 
 #include "Shapes/Cube.h"
 #include "Shapes/Cone.h"
+#include "Shapes/Cylinder.h"
 
 class TutorialScene : public Skateboard::Scene {
 public:
@@ -24,6 +25,7 @@ private:
 	shapeLibrary shapeLibrary;
 	Cube cube1;
 	Cone cone1;
+	Cylinder cylinder1;
 	newCamera camera1;
 
 	bool bWireframe = false;
@@ -44,18 +46,19 @@ private:
 	float handRotate = 0.f;
 	float armTransform[3] = { 0.f,0.f,0.f };
 
-	bool renderCube = true;
+	bool renderCube = false;
 	float cubeScale = 1.f;
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
 
 	bool renderCone = false;
-	int coneDiscSides = 8;
+	int coneDiscSides = 10;
+	float coneHeight = 2.f;
 	float coneScale = 1.f;
 	float coneRotate[3] = { 0.f, 0.f, 0.f };
 	float coneTransform[3] = { 0.f, 0.f, 0.f };
 
-	bool renderCylinder = false;
+	bool renderCylinder = true;
 	float cylinderLength = 3.f;
 	int cylinderDiscSides = 5;
 	float cylinderScale = 1.f;

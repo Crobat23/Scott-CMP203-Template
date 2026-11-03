@@ -10,7 +10,7 @@ Disc::~Disc()
 
 }
 
-void Disc::buildDisc(float offset)
+void Disc::buildDisc(float offset, int sides)
 {
 	//Assumes radius of 1. Size can be changed through transforms.
 
@@ -38,23 +38,13 @@ void Disc::buildDisc(float offset)
 	}
 	addIndice(1);
 
-	setDrawType(Skateboard::SKTBD_PRIMITIVE_TOPOLOGY::SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
+	setTopology(Skateboard::SKTBD_PRIMITIVE_TOPOLOGY::SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLEFAN);
 }
 
 void Disc::setColour(float3 colour)
 {
-	for (int i = 0; i <= sides + 1; i++)
+	for (int i = 0; i < getVertices().size(); i++)
 	{
 		getVertex(i).Colour = colour;
 	}
-}
-
-void Disc::setSides(int newSides)
-{
-	sides = newSides;
-}
-
-int Disc::getSides()
-{
-	return sides;
 }

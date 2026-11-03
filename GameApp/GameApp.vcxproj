@@ -185,6 +185,7 @@ IF EXIST "$(OutDir)assets\" $(SKTBD_ENGINE_DIR)\Platform\Windows\batch\ConvertTe
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Shapes\Cylinder.h" />
     <ClInclude Include="src\Shapes\Cone.h" />
     <ClInclude Include="src\Shapes\Disc.h" />
     <ClInclude Include="src\Shapes\Cube.h" />
@@ -196,6 +197,7 @@ IF EXIST "$(OutDir)assets\" $(SKTBD_ENGINE_DIR)\Platform\Windows\batch\ConvertTe
     <ClInclude Include="src\DefaultGameLayer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Shapes\Cylinder.cpp" />
     <ClCompile Include="src\Shapes\Cone.cpp" />
     <ClCompile Include="src\Shapes\Disc.cpp" />
     <ClCompile Include="src\Shapes\Cube.cpp" />

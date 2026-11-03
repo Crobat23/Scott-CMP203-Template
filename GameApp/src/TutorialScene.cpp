@@ -19,6 +19,7 @@ TutorialScene::TutorialScene(const std::string& name):
 	std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
 	cube1.setColours(cubeColours);
 	cone1.setColour(float3(0.6f, 0.6f, 0.2f));
+	cylinder1.setColour(float3(0.2f, 0.2f, 0.8f));
 }
 
 void TutorialScene::OnHandleInput(Skateboard::TimeManager* time)
@@ -62,24 +63,22 @@ void TutorialScene::OnRender()
 		CMP203::InstanceData hand = shapeLibrary.drawSquare(Renderer, float3(0.0f, 0.0f, 1.0f), float3(1.0f, 1.0f, 1.f), float3(1.0f, 0.f, 0.f), handRotate, lowerArm);
 	}
 
-	/*if (renderCube)
+	if (renderCube)
 	{
-		std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
-		shapeLibrary.drawCube(Renderer, cubeColours, 10, float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]), float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]), true);
-	}*/
+		cube1.Render(Renderer);
+	}
 
-	//if (renderCone) 
-	//{
-	//	shapeLibrary.drawCone(Renderer, coneDiscSides, float3(0.6f, 0.6f, 0.2f), coneScale, float3(coneTransform[0], coneTransform[1], coneTransform[2]), float3(coneRotate[0], coneRotate[1], coneRotate[2]));
-	//}
+	if (renderCone) 
+	{
+		cone1.renderAll(Renderer);
+	}
 
 	if (renderCylinder)
 	{
-		shapeLibrary.drawCylinder(Renderer, cylinderDiscSides, float3(0.2f, 0.2f, 0.8f), cylinderLength, cylinderScale, float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]), float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]));
+		//shapeLibrary.drawCylinder(Renderer, cylinderDiscSides, float3(0.2f, 0.2f, 0.8f), cylinderLength, cylinderScale, float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]), float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]));
 	}
 
-	//cube1.Render(Renderer);
-	cone1.renderAll(Renderer);
+	cylinder1.renderAll(Renderer);
 	Renderer.End();
 }
 
@@ -144,11 +143,15 @@ void TutorialScene::OnImGuiRender()
 		{
 			cone1.setDiscSides(coneDiscSides);
 		}
+		if (ImGui::SliderFloat("Cone Height", &coneHeight, 0.3f, 5.0f))
+		{
+			cone1.setConeHeight(coneHeight);
+		}
 		if	(ImGui::SliderFloat("Cone scale:", &coneScale, 0.1f, 10.0f) ||
 			ImGui::SliderFloat3("Cone rotation:", coneRotate, 0.0f, 360.0f) ||
 			ImGui::SliderFloat3("Cone position:", coneTransform, -15.0f, 15.0f))
 		{
-			cone1.setTransform(float3(coneTransform[0], coneTransform[1], coneTransform[2]),
+			cone1.setTransformAll(float3(coneTransform[0], coneTransform[1], coneTransform[2]),
 				float3(coneRotate[0], coneRotate[1], coneRotate[2]),
 				float3(coneScale, coneScale, coneScale));
 		}
@@ -156,11 +159,22 @@ void TutorialScene::OnImGuiRender()
 
 	ImGui::Checkbox("Render Cylinder", &renderCylinder);
 	if (renderCylinder) {
-		ImGui::SliderInt("Cylinder disc sides:", &cylinderDiscSides, 4, 30);
-		ImGui::SliderFloat("Cylinder Length:", &cylinderLength, 1.f, 100.f);
-		ImGui::SliderFloat("Cylinder scale:", &cylinderScale, 0.1f, 10.0f);
-		ImGui::SliderFloat3("Cylinder rotation:", cylinderRotate, 0.0f, 360.0f);
-		ImGui::SliderFloat3("Cylinder position:", cylinderTransform, -15.0f, 15.0f);
+		if (ImGui::SliderInt("Cylinder disc sides:", &cylinderDiscSides, 4, 30))
+		{
+			cylinder1.setDiscSides(cylinderDiscSides);
+		}
+		if (ImGui::SliderFloat("Cylinder Length:", &cylinderLength, 1.f, 100.f))
+		{
+			cylinder1.setCylinderLength(cylinderLength);
+		}
+		if (ImGui::SliderFloat("Cylinder scale:", &cylinderScale, 0.1f, 10.0f) ||
+			ImGui::SliderFloat3("Cylinder rotation:", cylinderRotate, 0.0f, 360.0f) ||
+			ImGui::SliderFloat3("Cylinder position:", cylinderTransform, -15.0f, 15.0f))
+		{
+			cylinder1.setTransformAll(float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]),
+				float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]),
+				float3(cylinderScale, cylinderScale, cylinderScale));
+		}
 	}
 
 	ImGui::End();

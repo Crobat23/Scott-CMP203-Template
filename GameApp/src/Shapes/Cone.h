@@ -12,7 +12,7 @@ public:
 
 	void setTransformAll(float3 translate, float3 rotation, float3 scale);
 
-	void setConeHeight(float newHeight) { coneHeight = newHeight; }
+	void setConeHeight(float newHeight);
 
 	void setDiscSides(int newSides);
 
@@ -20,6 +20,7 @@ public:
 private:
 	Disc base;
 
+	int discSides = 10;
 	float coneHeight = 2.f;
 };
 

@@ -84,7 +84,7 @@ CMP203::InstanceData ShapeObject::getTransform()
 	return transformData;
 }
 
-void ShapeObject::setDrawType(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType)
+void ShapeObject::setTopology(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType)
 {
 	drawType = newType;
 }

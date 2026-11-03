@@ -7,12 +7,8 @@ public:
 	Disc();
 	~Disc();
 
-	void buildDisc(float offset);
+	void buildDisc(float offset, int sides);
 	void setColour(float3 colour);
-
-	int getSides();
-	void setSides(int newSides);
 private:
-	int sides = 10;
 };
 
