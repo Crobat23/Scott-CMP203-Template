@@ -31,8 +31,10 @@ private:
 	bool bWireframe = false;
 	CMP203::Renderer203 Renderer;
 
-	float cameraTransform[3] = { 0.f,0.f,0.f };
-	float cameraAngle[2] = { 0.f,0.f };
+	int2 MousePosOld = { 0,0 };
+
+	float cameraSpeed = 10.f;
+	float cameraRotateSpeed = 15.f;
 
 
 	bool renderTriangle = false;
@@ -46,7 +48,7 @@ private:
 	float handRotate = 0.f;
 	float armTransform[3] = { 0.f,0.f,0.f };
 
-	bool renderCube = false;
+	bool renderCube = true;
 	float cubeScale = 1.f;
 	float cubeRotate[3] = { 0.f,0.f,0.f };
 	float cubeTransform[3] = { 0.f, 0.f, 0.f };
@@ -58,7 +60,7 @@ private:
 	float coneRotate[3] = { 0.f, 0.f, 0.f };
 	float coneTransform[3] = { 0.f, 0.f, 0.f };
 
-	bool renderCylinder = true;
+	bool renderCylinder = false;
 	float cylinderLength = 3.f;
 	int cylinderDiscSides = 5;
 	float cylinderScale = 1.f;

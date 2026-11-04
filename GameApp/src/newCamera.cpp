@@ -25,15 +25,30 @@ float3 newCamera::getForwardVector()
 	return camForward;
 }
 
-void newCamera::setPos(float3 newPos)
+void newCamera::updatePosition(char direction, Skateboard::TimeManager* time)
 {
-	position = newPos;
+	switch (direction)
+	{
+	case ('W'):
+		position += camForward * moveSpeed * time->DeltaTime();
+		break;
+	case ('S'):
+		position -= camForward * moveSpeed * time->DeltaTime();
+		break;
+	case ('A'):
+		position -= camRight * moveSpeed * time->DeltaTime();
+		break;
+	case ('D'):
+		position += camRight * moveSpeed * time->DeltaTime();
+		break;
+	}
 }
 
-void newCamera::setAngle(float3 newAngle)
+void newCamera::setAngle(int2 mouseDeltas, Skateboard::TimeManager* time)
 {
-	angle = newAngle;
-	updateUnitVectors(newAngle[0], newAngle[1], newAngle[2]);
+	angle[1] += mouseDeltas.x * time->DeltaTime() * rotateSpeed;
+	angle[0] -= mouseDeltas.y * time->DeltaTime() * rotateSpeed;
+	updateUnitVectors(angle[0], angle[1], angle[2]);
 }
 
 void newCamera::updateUnitVectors(float pitchAngle, float yawAngle, float rollAngle)
@@ -55,5 +70,5 @@ void newCamera::updateUnitVectors(float pitchAngle, float yawAngle, float rollAn
 	camUp.z = sinY * sinR - sinP * cosR * cosY;
 	camUp = glm::normalize(camUp);
 
-	camRight = camUp * camForward;
+	camRight = glm::cross(camUp, camForward);
 }

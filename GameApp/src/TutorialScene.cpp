@@ -3,6 +3,8 @@
 
 #include "TutorialScene.h"
 
+#include <iostream>
+
 #include "Skateboard/Application.h"
 #include "Skateboard/Platform.h"
 #include "Skateboard/Assets/AssetManager.h"
@@ -18,6 +20,7 @@ TutorialScene::TutorialScene(const std::string& name):
 
 	std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
 	cube1.setColours(cubeColours);
+	cube1.flipWindingOrder();
 	cone1.setColour(float3(0.6f, 0.6f, 0.2f));
 	cylinder1.setColour(float3(0.2f, 0.2f, 0.8f));
 }
@@ -25,26 +28,39 @@ TutorialScene::TutorialScene(const std::string& name):
 void TutorialScene::OnHandleInput(Skateboard::TimeManager* time)
 {
 	Scene::OnHandleInput(time);
+
+	if (Input::IsKeyDown(Keys::sc_w)) camera1.updatePosition('W', time);
+	else if (Input::IsKeyDown(Keys::sc_s)) camera1.updatePosition('S', time);
+	else if (Input::IsKeyDown(Keys::sc_a)) camera1.updatePosition('A', time);
+	else if (Input::IsKeyDown(Keys::sc_d)) camera1.updatePosition('D', time);
+
+	if (Input::IsMouseButtonDown(MouseBtn::mb_RightButton))
+	{
+		int2 windowCentre = Input::GetWindowSize() / 2;
+		int2 mouseDeltas = Input::GetMousePos() - MousePosOld;
+
+		camera1.setAngle(mouseDeltas, time);
+
+		Input::SetMousePos(windowCentre.x, windowCentre.y);
+	}
+	MousePosOld = Input::GetMousePos();
 }
 
 void TutorialScene::OnUpdate(Skateboard::TimeManager* time)
 {
 	Scene::OnUpdate(time);
 
-	//camera1.setPos(float3(cameraTransform[0], cameraTransform[1], cameraTransform[2]));
-	//camera1.setAngle(float3(cameraAngle[0], cameraAngle[1], 0.f));
+	CMP203::CameraData cam_data;
+	float3 camera_pos = camera1.getPos();
+	float3 camera_forward = camera1.getForwardVector();
+	float3 camera_up = camera1.getUpVector();
 
-	//CMP203::CameraData cam_data;
-	//float3 camera_pos = camera1.getPos();
-	//float3 camera_forward = camera1.getForwardVector();
-	//float3 camera_up = camera1.getUpVector();
+	cam_data.ProjectionMatrix = glm::perspectiveLH(glm::radians(60.f),
+		GraphicsContext::Context->GetClientAspectRatio(), 100.f, 0.01f);
 
-	//cam_data.ProjectionMatrix = glm::perspectiveLH(glm::radians(60.f),
-	//GraphicsContext::Context->GetClientAspectRatio(), 100.f, 0.01f);
+	cam_data.ViewMatrix = glm::lookAtLH(camera_pos, camera_pos + camera_forward, camera_up);
 
-	//cam_data.ViewMatrix = glm::lookAtLH(camera_pos, camera_pos + camera_forward, camera_up);
-
-	//Renderer.SetCameraData(cam_data);
+	Renderer.SetCameraData(cam_data);
 }
 
 void TutorialScene::OnRender()
@@ -75,10 +91,9 @@ void TutorialScene::OnRender()
 
 	if (renderCylinder)
 	{
-		//shapeLibrary.drawCylinder(Renderer, cylinderDiscSides, float3(0.2f, 0.2f, 0.8f), cylinderLength, cylinderScale, float3(cylinderTransform[0], cylinderTransform[1], cylinderTransform[2]), float3(cylinderRotate[0], cylinderRotate[1], cylinderRotate[2]));
+		cylinder1.renderAll(Renderer);
 	}
 
-	cylinder1.renderAll(Renderer);
 	Renderer.End();
 }
 
@@ -107,8 +122,14 @@ void TutorialScene::OnImGuiRender()
 	}
 
 	ImGui::Text("Camera Controls");
-	ImGui::SliderFloat3("Camera Movement", cameraTransform, -5.f, 5.f);
-	ImGui::SliderFloat2("Camera Angle", cameraAngle, -90.f, 90.f);
+	if (ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 10.f))
+	{
+		camera1.setMoveSpeed(cameraSpeed);
+	}
+	if (ImGui::SliderFloat("Rotation Speed", &cameraRotateSpeed, 5.f, 30.f))
+	{
+		camera1.setRotateSpeed(cameraRotateSpeed);
+	}
 
 	ImGui::Checkbox("Render Triangle", &renderTriangle);
 	if (renderTriangle) {
