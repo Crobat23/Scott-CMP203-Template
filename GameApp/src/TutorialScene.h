@@ -1,5 +1,6 @@
 #pragma once
 #include "Skateboard/Scene/Scene.h"
+#include "Skateboard/Assets/AssetManager.h"
 #include "Skateboard/ComponentSystems/Systems/BaseSystem.h"
 
 #include "shapeLibrary.h"
@@ -23,7 +24,8 @@ public:
 
 private:
 	shapeLibrary shapeLibrary;
-	Cube cube1;
+	Cube room;
+	Cube crate;
 	Cone cone1;
 	Cylinder cylinder1;
 	newCamera camera1;
@@ -36,6 +38,10 @@ private:
 	float cameraSpeed = 10.f;
 	float cameraRotateSpeed = 15.f;
 
+	SamplerRef samplerClamp;
+	SamplerRef samplerRepeat;
+	SamplerDesc samplerDesc_Clamp;
+	SamplerDesc samplerDesc_Repeat;
 
 	bool renderTriangle = false;
 	float triangleScale= 1.f;

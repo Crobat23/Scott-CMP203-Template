@@ -1,5 +1,6 @@
 #pragma once
 #include "CMP203/Renderer203.h"
+#include "Skateboard/Assets/AssetManager.h"
 
 class ShapeObject
 {
@@ -19,6 +20,8 @@ public:
 	void setTransform(float3 translate, float3 rotation, float3 scale, CMP203::InstanceData parentData);
 	void setTransform(CMP203::InstanceData parentData);
 	CMP203::InstanceData getTransform();
+
+	void setObjectTexture(std::string identifier, SamplerRef sampleType);
 
 	void setTopology(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType);
 

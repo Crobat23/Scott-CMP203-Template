@@ -89,6 +89,12 @@ void ShapeObject::setTopology(enum Skateboard::SKTBD_PRIMITIVE_TOPOLOGY newType)
 	drawType = newType;
 }
 
+void ShapeObject::setObjectTexture(std::string identifier, SamplerRef sampleType)
+{
+	transformData.TextureIndex = AssetManager::GetTexture(identifier)->GetViewIndex();
+	transformData.SamplerIndex = sampleType->GetSamplerIndex();
+}
+
 void ShapeObject::flipWindingOrder()
 {
 	int stepSize;

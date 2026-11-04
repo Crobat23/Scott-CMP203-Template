@@ -18,9 +18,28 @@ TutorialScene::TutorialScene(const std::string& name):
 	// Disable lighting, until we have a light in the scene
 	Renderer.UnsetPipelineFlags(CMP203::LIT);
 
-	std::vector<float3> cubeColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
-	cube1.setColours(cubeColours);
-	cube1.flipWindingOrder();
+	//Setup samplers
+	samplerDesc_Clamp = CMP203::LinearSampler(SamplerMode_Clamp, SamplerMode_Clamp);
+	samplerDesc_Repeat = CMP203::LinearSampler(SamplerMode_Wrap, SamplerMode_Wrap);
+	samplerClamp = ResourceFactory::CreateSampler(samplerDesc_Clamp, L"ClampBoth");
+	samplerRepeat = ResourceFactory::CreateSampler(samplerDesc_Repeat, L"RepeatBoth");
+
+	//Load Textures
+	AssetManager::LoadTexture(L"assets/crate.dds", "Crate");
+	AssetManager::LoadTexture(L"assets/stone.dds", "Stone");
+
+	//Setup Room
+	std::vector<float3> roomColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
+	std::vector<float2> roomUV = { float2(10,4), float2(10,4), float2(10,4), float2(10,4), float2(10,10), float2(10,10) };
+	room.setColours(roomColours);
+	room.flipWindingOrder();
+	room.setTransform(float3(0.f,0.f,0.f), float3(0.f,0.f,0.f), float3(10.f,4.f,10.f));
+	room.setUV(roomUV);
+	room.setObjectTexture("Stone", samplerRepeat);
+
+	//Setup crate and other shapes
+	crate.setUV(float2(1, 1));
+	crate.setObjectTexture("Crate", samplerClamp);
 	cone1.setColour(float3(0.6f, 0.6f, 0.2f));
 	cylinder1.setColour(float3(0.2f, 0.2f, 0.8f));
 }
@@ -81,7 +100,7 @@ void TutorialScene::OnRender()
 
 	if (renderCube)
 	{
-		cube1.Render(Renderer);
+		crate.Render(Renderer);
 	}
 
 	if (renderCone) 
@@ -93,6 +112,8 @@ void TutorialScene::OnRender()
 	{
 		cylinder1.renderAll(Renderer);
 	}
+	
+	room.Render(Renderer);
 
 	Renderer.End();
 }
@@ -152,7 +173,7 @@ void TutorialScene::OnImGuiRender()
 			ImGui::SliderFloat3("Cube rotation:", cubeRotate, 0.0f, 360.0f) ||
 			ImGui::SliderFloat3("Cube position:", cubeTransform, -15.0f, 15.0f))
 		{
-			cube1.setTransform(float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]),
+			crate.setTransform(float3(cubeTransform[0], cubeTransform[1], cubeTransform[2]),
 				float3(cubeRotate[0], cubeRotate[1], cubeRotate[2]),
 				float3(cubeScale, cubeScale, cubeScale));
 		}
