@@ -28,7 +28,10 @@ private:
 	Cube crate;
 	Cone cone1;
 	Cylinder cylinder1;
+
 	newCamera camera1;
+
+	std::vector<CMP203::Light> SceneLights;
 
 	bool bWireframe = false;
 	CMP203::Renderer203 Renderer;
@@ -42,6 +45,9 @@ private:
 	SamplerRef samplerRepeat;
 	SamplerDesc samplerDesc_Clamp;
 	SamplerDesc samplerDesc_Repeat;
+
+	float spotlightPos[3] = { 0.f, -1.f, 0.f };
+	float pointLightPos[3] = { 0.f, -1.f, 0.f };
 
 	bool renderTriangle = false;
 	float triangleScale= 1.f;

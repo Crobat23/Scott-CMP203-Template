@@ -15,8 +15,40 @@ TutorialScene::TutorialScene(const std::string& name):
 	size_t TriangleBuffersizeOverride = 1024 * 1024;
 	size_t InstanceBufferSizeOverride = 1024 * 1024;
 	Renderer.Init(TriangleBuffersizeOverride, InstanceBufferSizeOverride);
-	// Disable lighting, until we have a light in the scene
-	Renderer.UnsetPipelineFlags(CMP203::LIT);
+
+	// Oh yeah, light time
+	Renderer.SetPipelineFlags(CMP203::LIT);
+	Renderer.SetAmbientLight(float3(0.2f, 0.2f, 0.2f));
+
+	CMP203::Light DirectionalLight(CMP203::LightType::LightDirectional);
+	DirectionalLight.Type = CMP203::LightType::LightDirectional;
+	DirectionalLight.DiffuseColour = float4(0.6f, 0.6f, 0.2f, 1.f);
+	DirectionalLight.LightDirection = float3(-0.5f, -0.5f, 0.f);
+
+	CMP203::Light SpotLight(CMP203::LightType::LightSpot);
+	SpotLight.Type = CMP203::LightType::LightSpot;
+	SpotLight.LightPosition = float3(0, -1, 0);
+	SpotLight.LightDirection = float3(0, -1, 0);
+	SpotLight.ConstantAttenuation = 0.05f;
+	SpotLight.LinearAttenuation = 0.01f;
+	SpotLight.SquareAttenuation = 0.001f;
+	SpotLight.InnerCone = glm::radians(30.f);
+	SpotLight.OuterCone = glm::radians(90.f);
+	SpotLight.FalloffPower = 2.f;
+
+	CMP203::Light PointLight(CMP203::LightType::LightPoint);
+	PointLight.Type = CMP203::LightType::LightPoint;
+	PointLight.DiffuseColour = float4(0.8f, 0.f, 0.f, 1.f);
+	PointLight.LightPosition = float3(0, -1.f, 0);
+	PointLight.ConstantAttenuation = 0.05f;
+	PointLight.LinearAttenuation = 0.01f;
+	PointLight.SquareAttenuation = 0.001f;
+
+	SceneLights.push_back(DirectionalLight);
+	SceneLights.push_back(SpotLight);
+	SceneLights.push_back(PointLight);
+
+	Renderer.SetLights(SceneLights);
 
 	//Setup samplers
 	samplerDesc_Clamp = CMP203::LinearSampler(SamplerMode_Clamp, SamplerMode_Clamp);
@@ -36,12 +68,14 @@ TutorialScene::TutorialScene(const std::string& name):
 	room.setTransform(float3(0.f,0.f,0.f), float3(0.f,0.f,0.f), float3(10.f,4.f,10.f));
 	room.setUV(roomUV);
 	room.setObjectTexture("Stone", samplerRepeat);
+	room.setMaterial(float4(0.2f, 0.2f, 0.8f, 0.5f), 5, 2);
 
 	//Setup crate and other shapes
 	crate.setUV(float2(1, 1));
 	crate.setObjectTexture("Crate", samplerClamp);
 	cone1.setColour(float3(0.6f, 0.6f, 0.2f));
 	cylinder1.setColour(float3(0.2f, 0.2f, 0.8f));
+
 }
 
 void TutorialScene::OnHandleInput(Skateboard::TimeManager* time)
@@ -142,14 +176,30 @@ void TutorialScene::OnImGuiRender()
 
 	}
 
+	if (ImGui::Button("Draw normals")) Renderer.SetDrawDebugNormals(true);
+	if (ImGui::Button("Don't draw normals")) Renderer.SetDrawDebugNormals(false);
+
 	ImGui::Text("Camera Controls");
-	if (ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 10.f))
+	if (ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.1f, 30.0f))
 	{
 		camera1.setMoveSpeed(cameraSpeed);
 	}
 	if (ImGui::SliderFloat("Rotation Speed", &cameraRotateSpeed, 5.f, 30.f))
 	{
 		camera1.setRotateSpeed(cameraRotateSpeed);
+	}
+
+	ImGui::Text("Spotlight Controls");
+	if (ImGui::SliderFloat3("Spotlight Position", spotlightPos, -15.f, 15.f))
+	{
+		CMP203::Light& myLightRef = Renderer.GetLight(1);
+		myLightRef.LightPosition = float3(spotlightPos[0], spotlightPos[1], spotlightPos[2]);
+	}
+	ImGui::Text("Point Light Controls");
+	if (ImGui::SliderFloat3("Point Light Position", pointLightPos, -15.f, 15.f))
+	{
+		CMP203::Light& myLightRef = Renderer.GetLight(2);
+		myLightRef.LightPosition = float3(pointLightPos[0], pointLightPos[1], pointLightPos[2]);
 	}
 
 	ImGui::Checkbox("Render Triangle", &renderTriangle);

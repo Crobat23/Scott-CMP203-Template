@@ -19,6 +19,8 @@ public:
 	void setTransform(float3 translate, float3 rotation, float3 scale);
 	void setTransform(float3 translate, float3 rotation, float3 scale, CMP203::InstanceData parentData);
 	void setTransform(CMP203::InstanceData parentData);
+
+	void setMaterial(float4 colourData, float specStrength, float specPower);
 	CMP203::InstanceData getTransform();
 
 	void setObjectTexture(std::string identifier, SamplerRef sampleType);

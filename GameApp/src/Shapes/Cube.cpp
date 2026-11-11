@@ -17,6 +17,14 @@ Cube::Cube()
 	setIndices({ 0,2,1,0,3,2, 4,6,5,4,7,6, 8,10,9,8,11,10, 12,14,13,12,15,14, 16,18,17,16,19,18, 20,22,21,20,23,22 });
 
 	setTopology(Skateboard::SKTBD_PRIMITIVE_TOPOLOGY::SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	std::vector<float3> normals = { float3(0.f,0.f,1.f), float3(1.f,0.f,0.f), float3(0.f,0.f,-1.f), float3(-1.f,0.f,0.f), float3(0.f,1.f,0.f), float3(0.f,-1.f,0.f) };
+
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 4; j++) {
+			getVertex(i * 4 + j).Normal = normals.at(i);
+		}
+	}
 }
 
 Cube::~Cube()

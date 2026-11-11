@@ -79,6 +79,13 @@ void ShapeObject::setTransform(CMP203::InstanceData parentData)
 	transformData.World = parentData.World;
 }
 
+void ShapeObject::setMaterial(float4 colourData, float specStrength, float specPower)
+{
+	transformData.InstanceColour = colourData;
+	transformData.SpecularStrength = specStrength;
+	transformData.SpecularPower = specPower;
+}
+
 CMP203::InstanceData ShapeObject::getTransform()
 {
 	return transformData;
@@ -106,6 +113,10 @@ void ShapeObject::flipWindingOrder()
 	for (int i = 1; i < indices.size(); i += stepSize)
 	{
 		std::swap(indices.at(i), indices.at(i + 1));
+	}
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		vertices.at(i).Normal = -vertices.at(i).Normal;
 	}
 }
 
