@@ -16,6 +16,7 @@ public:
 	void setIndices(std::vector<uint32_t> newIndices);
 	void addIndice(uint32_t newIndice);
 
+	void setTransform(float3 translate);
 	void setTransform(float3 translate, float3 rotation, float3 scale);
 	void setTransform(float3 translate, float3 rotation, float3 scale, CMP203::InstanceData parentData);
 	void setTransform(CMP203::InstanceData parentData);

@@ -59,6 +59,7 @@ TutorialScene::TutorialScene(const std::string& name):
 	//Load Textures
 	AssetManager::LoadTexture(L"assets/crate.dds", "Crate");
 	AssetManager::LoadTexture(L"assets/stone.dds", "Stone");
+	AssetManager::LoadTexture(L"assets/skybox_cube.dds", "Sky");
 
 	//Setup Room
 	std::vector<float3> roomColours = { float3(0.f,0.f,1.f), float3(0.f,1.f,0.f), float3(1.f,0.f,0.f), float3(1.f,0.f,1.f), float3(1.f,1.f,1.f), float3(0.5f,0.5f,0.5f) };
@@ -69,6 +70,12 @@ TutorialScene::TutorialScene(const std::string& name):
 	room.setUV(roomUV);
 	room.setObjectTexture("Stone", samplerRepeat);
 	room.setMaterial(float4(0.2f, 0.2f, 0.8f, 0.5f), 5, 2);
+
+	//Setup Skybox
+	std::vector<float4> skyboxUV = { float4(0.25,0.25,0.50,0.50), float4(0.50,0.25,0.75,0.50), float4(0.75,0.25,1.00,0.50), float4(0,0.25,0.25,0.5),  float4(0.25,0.00,0.50,0.25), float4(0.25,0.50,0.50,0.75), };
+	skybox.flipWindingOrder();
+	skybox.setObjectTexture("Sky", samplerClamp);
+	skybox.setUV(skyboxUV);
 
 	//Setup crate and other shapes
 	crate.setUV(float2(1, 1));
@@ -114,16 +121,16 @@ void TutorialScene::OnUpdate(Skateboard::TimeManager* time)
 	cam_data.ViewMatrix = glm::lookAtLH(camera_pos, camera_pos + camera_forward, camera_up);
 
 	Renderer.SetCameraData(cam_data);
+
+	//Set the skybox to the position of the camera
+	skybox.setTransform(camera1.getPos());
 }
 
 void TutorialScene::OnRender()
 {
 	Renderer.Begin();
 
-	if (renderTriangle)
-	{
-		shapeLibrary.drawTriangle(Renderer, float3(1.0f, 1.0f, 0.0f), triangleScale, float3(triangleTransform[0], triangleTransform[1], triangleTransform[2]), triangleRotate);
-	}
+	renderSkybox();
 	
 	if (renderArm)
 	{
@@ -149,7 +156,24 @@ void TutorialScene::OnRender()
 	
 	room.Render(Renderer);
 
+
+	if (renderTriangle)
+	{
+		shapeLibrary.drawTriangle(Renderer, float4(1.0f, 1.0f, 0.0f, 0.5f), triangleScale, float3(triangleTransform[0], triangleTransform[1], triangleTransform[2]), triangleRotate);
+	}
+
 	Renderer.End();
+}
+
+void TutorialScene::renderSkybox()
+{
+	Renderer.UnsetPipelineFlags(CMP203::LIT);
+	Renderer.UnsetPipelineFlags(CMP203::DEPTH_TEST);
+
+	skybox.Render(Renderer);
+
+	Renderer.SetPipelineFlags(CMP203::LIT);
+	Renderer.SetPipelineFlags(CMP203::DEPTH_TEST);
 }
 
 void TutorialScene::OnEvent(Event& e)

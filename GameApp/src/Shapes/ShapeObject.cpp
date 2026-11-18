@@ -40,6 +40,15 @@ void ShapeObject::addIndice(uint32_t newIndice)
 	indices.push_back(newIndice);
 }
 
+void ShapeObject::setTransform(float3 translate)
+{
+	glm::mat4 _translate;
+
+	_translate = glm::translate(translate);
+
+	transformData.World = _translate;
+}
+
 void ShapeObject::setTransform(float3 translate, float3 rotation, float3 scale)
 {
 	glm::mat4 _transform, _rotationX, _rotationY, _rotationZ, _scale;

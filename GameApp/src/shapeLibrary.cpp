@@ -10,7 +10,7 @@ shapeLibrary::~shapeLibrary()
 
 }
 
-void shapeLibrary::drawTriangle(CMP203::Renderer203 &renderer, float3 colour, float scaleVal, float3 translationVal, float rotationAngle)
+void shapeLibrary::drawTriangle(CMP203::Renderer203 &renderer, float4 colour, float scaleVal, float3 translationVal, float rotationAngle)
 {
 	CMP203::Vertex v0, v1, v2;
 	CMP203::InstanceData triangleData;
@@ -32,8 +32,12 @@ void shapeLibrary::drawTriangle(CMP203::Renderer203 &renderer, float3 colour, fl
 	std::vector<CMP203::Vertex> vertices = { v0, v1, v2 };
 	std::vector<uint32_t> indices = { 0, 1, 2 };
 
+	renderer.SetPipelineFlags(CMP203::ALPHA_BLEND);
+
 	renderer.SetTopology(SKTBD_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	renderer.DrawVertices(vertices.data(), vertices.size(), indices.data(), indices.size(), &triangleData);
+
+	renderer.UnsetPipelineFlags(CMP203::ALPHA_BLEND);
 }
 
 CMP203::InstanceData shapeLibrary::drawSquare(CMP203::Renderer203& renderer, float3 colour, float3 scaleVal, float3 translationVal, float rotationAngle)

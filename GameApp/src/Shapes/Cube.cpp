@@ -54,6 +54,18 @@ void Cube::setUV(std::vector<float2> uvValues)
 	}
 }
 
+void Cube::setUV(std::vector<float4> uvValues)
+{
+	if (uvValues.size() < 6) return;
+
+	for (int i = 0; i < 6; i++) {
+		getVertex(i * 4).UV = { uvValues.at(i).x,uvValues.at(i).a };
+		getVertex(i * 4 + 1).UV = { uvValues.at(i).z,uvValues.at(i).a};
+		getVertex(i * 4 + 2).UV = { uvValues.at(i).z ,uvValues.at(i).y };
+		getVertex(i * 4 + 3).UV = { uvValues.at(i).x,uvValues.at(i).y};
+	}
+}
+
 void Cube::setColours(std::vector<float3> colours)
 {
 	if (colours.size() < 6) return;

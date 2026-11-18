@@ -22,12 +22,16 @@ public:
 	virtual void OnEvent(Event& e) override;
 	virtual void OnImGuiRender() override;
 
+
+	void renderSkybox();
 private:
 	shapeLibrary shapeLibrary;
 	Cube room;
 	Cube crate;
 	Cone cone1;
 	Cylinder cylinder1;
+
+	Cube skybox;
 
 	newCamera camera1;
 
